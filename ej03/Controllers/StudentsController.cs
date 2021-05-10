@@ -32,8 +32,8 @@ namespace ej03.Controllers
 
             string projectTitle = _config.GetSection("Project").GetSection("Title").Value;
             string dbConnection = _config.GetConnectionString("Database");
-            Console.Out.WriteLine($"We Are connecting to ...{dbConnection}");
-
+            //Console.Out.WriteLine($"We Are connecting to ...{dbConnection}");
+            Console.WriteLine("========================NOS PIDEN NUEVA LISTA==========================");
 
             Random r = new Random();
             int est = r.Next(15, 21);
@@ -44,12 +44,14 @@ namespace ej03.Controllers
             {
                 cont += 1;
                 string med = cont >= 100 ? "" + cont : (cont >= 10 ? "0" + cont : "00" + cont);
-                PriceBook.Add(new Price()
+                Price p = new Price()
                 {
                     CodProd = cat[r.Next(0, 2)] + "-" + med,
-                    SetPrice = r.Next(1,5001),
-                    PromotionPrice = r.Next(0, 2) == 0 ? 0 : r.Next(1,2001)
-                });
+                    SetPrice = r.Next(1, 5001),
+                    PromotionPrice = r.Next(0, 2) == 0 ? 0 : r.Next(1, 2001)
+                };
+                Console.WriteLine($"Precio CodProd: {p.CodProd} SetPrice: {p.SetPrice} PromotionPrice: {p.PromotionPrice}");
+                PriceBook.Add(p);
             }
             return PriceBook;
         }

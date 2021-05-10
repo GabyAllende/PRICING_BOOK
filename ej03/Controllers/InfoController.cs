@@ -28,7 +28,7 @@ namespace ej03.Controllers
             string envName = _config.GetSection("EnvironmentName").Value;
 
             string dbConnection = _config.GetConnectionString("Database");
-            Console.Out.WriteLine($"We Are connecting to ...{dbConnection}");
+            //Console.Out.WriteLine($"We Are connecting to ...{dbConnection}");
 
             return $"Project Title: {projectTitle} || Environment Name: {envName}";
         }
