@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using UPB.Practice3.ej03;
 
 namespace ej03.Controllers
 {
@@ -14,7 +15,8 @@ namespace ej03.Controllers
 
         private static IConfiguration _config;
 
-        List<Price> PriceBook ;
+        Book myBook;
+        List<Pricing> PriceBook ;
         public int cont { get; set; }
 
         string[] nombres = { "Camila", "Fernando", "Fabricio", "Jose", "Andrea", "Stephany", "Carlos", "Nicole", "Kiara", "Matilde" };
@@ -23,11 +25,20 @@ namespace ej03.Controllers
         public StudentController(IConfiguration config)
         {
             _config = config;
-            PriceBook = new List<Price>();
+
+            myBook = new Book()
+            {
+                Id = 1,
+                Name = "MyBook",
+                Description = "Libro que utilizare para todos mis precios",
+                Products = new List<Pricing>()
+
+            };
+            PriceBook = myBook.Products;
         }
 
         [HttpGet]
-        public List<Price> GetStudent()
+        public Book GetStudent()
         {
 
             string projectTitle = _config.GetSection("Project").GetSection("Title").Value;
@@ -44,40 +55,41 @@ namespace ej03.Controllers
             {
                 cont += 1;
                 string med = cont >= 100 ? "" + cont : (cont >= 10 ? "0" + cont : "00" + cont);
-                Price p = new Price()
+                Pricing p = new Pricing()
                 {
-                    CodProd = cat[r.Next(0, 2)] + "-" + med,
-                    SetPrice = r.Next(1, 5001),
-                    PromotionPrice = r.Next(0, 2) == 0 ? 0 : r.Next(1, 2001)
+                    Code = cat[r.Next(0, 2)] + "-" + med,
+                    Price = r.Next(1, 5001),
+                    PromotionPrice = r.Next(0, 2) == 0 ? 0 : r.Next(1, 2001),
+                    PricingBookId = 1
                 };
-                Console.WriteLine($"Precio CodProd: {p.CodProd} SetPrice: {p.SetPrice} PromotionPrice: {p.PromotionPrice}");
+                Console.WriteLine($"Precio CodProd: {p.Code} SetPrice: {p.Price} PromotionPrice: {p.PromotionPrice}");
                 PriceBook.Add(p);
             }
-            return PriceBook;
+            return myBook;
         }
 
        
 
         [HttpPost]
-        public Price CreateStudent([FromBody] Price price)//, [FromBody] string studentLastName ) 
+        public Pricing CreateStudent([FromBody] Pricing price)//, [FromBody] string studentLastName ) 
         {
             PriceBook.Add(price);
             return price;
         }
         [HttpPut]
-        public Price UpdateStudent([FromBody] Price priceToUpdate)
+        public Pricing UpdateStudent([FromBody] Pricing priceToUpdate)
         {
-            Price foundPrice = PriceBook.Find(quo => ( quo.CodProd == priceToUpdate.CodProd));
+            Pricing foundPrice = PriceBook.Find(quo => ( quo.Code == priceToUpdate.Code));
 
-            foundPrice.SetPrice = priceToUpdate.SetPrice;
+            foundPrice.Price = priceToUpdate.Price;
             foundPrice.PromotionPrice = priceToUpdate.PromotionPrice;
             return foundPrice;
         }
 
         [HttpDelete]
-        public Price DeleteStudent([FromBody] Price priceToDelete)
+        public Pricing DeleteStudent([FromBody] Pricing priceToDelete)
         {
-            PriceBook.RemoveAll(price => price.CodProd == priceToDelete.CodProd);
+            PriceBook.RemoveAll(price => price.Code == priceToDelete.Code);
             return priceToDelete;
         }
     }
